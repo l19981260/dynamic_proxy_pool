@@ -23,7 +23,7 @@ def get_connection():
 
 @app.route('/')
 def index():
-    return '<h2>欢迎使用代理池</h2>'
+    return '<h2>Welcome to dynamic proxy pool</h2>'
 
 @app.route('/random')
 def get_proxy():
