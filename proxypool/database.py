@@ -23,7 +23,7 @@ class RedisClient(object):
         :param port: Redis端口号
         :param password: Redis密码
         """
-        self.db = redis.StrictRedis(host=host,port=port,password=password,decode_responses=True)
+        self.db = redis.StrictRedis(host=host,port=port,password=password,db=0,decode_responses=True)
 
     def add(self,proxy,score=INITIAL_SCORE):
         """
@@ -73,6 +73,7 @@ class RedisClient(object):
         :param proxy:代理
         :return:是否存在
         """
+        print('111')
         return not self.db.zscore(REDIS_KEY,proxy) == None
 
     def max(self,proxy):
@@ -81,7 +82,7 @@ class RedisClient(object):
         :param proxy:代理
         :return:设置结果
         """
-        print('代理',proxy,'可以使用，血量设置为',MAX_SCORE)
+        print('代理',proxy,'可以使用，分数设置为',MAX_SCORE)
         return self.db.zadd(REDIS_KEY,MAX_SCORE,proxy)
 
     def count(self):

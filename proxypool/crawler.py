@@ -42,9 +42,21 @@ class Crawler(object,metaclass=ProxyMetaclass):
         """
         start_url = 'http://www.66ip.cn/{}.html'
         urls = [start_url.format(page) for page in range(1, page_count + 1)]
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Cookie": "_ydclearance=548e5c734255d1c9e8198bf7-9c47-4ab9-9b61-3ae87ba78d82-1542683689; Hm_lvt_1761fabf3c988e7f04bec51acd4073f4=1542589544,1542676494,1542676931; yd_cookie=4a4e31cd-3408-473167b5f940bd2cccb1128333784b638e14; Hm_lpvt_1761fabf3c988e7f04bec51acd4073f4=1542677288",
+            "Host": "www.66ip.cn",
+            "Pragma": "no-cache",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36"
+        }
         for url in urls:
             print('Crawling', url)
-            html = get_page(url)
+            html = get_page(url,options=headers)
             if html:
                 doc = pq(html)
                 trs = doc('.containerbox table tr:gt(0)').items()
@@ -52,7 +64,7 @@ class Crawler(object,metaclass=ProxyMetaclass):
                     ip = tr.find('td:nth-child(1)').text()
                     port = tr.find('td:nth-child(2)').text()
                     yield ':'.join([ip, port])
-
+    '''
     def crawl_proxy360(self):
         """
         获取Proxy360
@@ -68,7 +80,8 @@ class Crawler(object,metaclass=ProxyMetaclass):
                 ip = line.find('.tbBottomLine:nth-child(1)').text()
                 port = line.find('.tbBottomLine:nth-child(2)').text()
                 yield ':'.join([ip, port])
-
+    '''
+    '''
     def crawl_goubanjia(self):
         """
         获取Goubanjia
@@ -82,7 +95,8 @@ class Crawler(object,metaclass=ProxyMetaclass):
             for td in tds:
                 td.find('p').remove()
                 yield td.text().replace(' ', '')
-
+    '''
+    '''
     def crawl_ip181(self):
         start_url = 'http://www.ip181.com/'
         html = get_page(start_url)
@@ -92,7 +106,8 @@ class Crawler(object,metaclass=ProxyMetaclass):
             for address, port in re_ip_address:
                 result = address + ':' + port
                 yield result.replace(' ', '')
-
+    '''
+    '''
     def crawl_kxdaili(self):
         for i in range(1, 11):
             start_url = 'http://www.kxdaili.com/ipList/{}.html#ip'.format(i)
@@ -103,6 +118,7 @@ class Crawler(object,metaclass=ProxyMetaclass):
                 for address, port in re_ip_address:
                     result = address + ':' + port
                     yield result.replace(' ', '')
+    '''
 
     def crawl_premproxy(self):
         for i in ['China-01', 'China-02', 'China-03', 'China-04', 'Taiwan-01']:
@@ -224,4 +240,15 @@ class Crawler(object,metaclass=ProxyMetaclass):
             for address, port in re_ip_address:
                 result = address + ':' + port
                 yield result.replace(' ', '')
+
+    def crawl_mianfei(self):
+        for i in range(1, 4):
+            start_url = 'http://ip.jiangxianli.com/?page={}'.format(i)
+            html = get_page(start_url)
+            if html:
+                find_ips = re.compile('(\d+\.\d+\.\d+\.\d+:\d+)', re.S)
+                re_ip_address = find_ips.findall(html)
+                re_ip_address = list(set(re_ip_address))
+                for eve_ip_address in re_ip_address:
+                    yield eve_ip_address
 

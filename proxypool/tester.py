@@ -60,8 +60,9 @@ class Tester(object):
                 end = min(i + MAX_TEST_SIZE,count)
                 print('正在测试第',start+1,'-',end,'个代理')
                 test_proxies = self.redis.batch(start,end)
+
                 loop = asyncio.get_event_loop()
-                tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]
+                tasks = [self.test_single_proxy(proxy[0]) for proxy in test_proxies]
                 loop.run_until_complete(asyncio.wait(tasks))
                 sys.stdout.flush()
                 time.sleep(5)
